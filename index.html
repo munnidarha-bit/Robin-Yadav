@@ -135,6 +135,41 @@
       .container{ grid-template-columns: 1fr; padding:0; }
       .sidebar{ order:2 }
     }
+
+    .video-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.75);
+  justify-content: center;
+  align-items: center;
+}
+
+.video-content {
+  background: #fff;
+  padding: 14px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 700px;
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background: #dd0000;
+  color: #fff;
+  border-radius: 50%;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
   </style>
 </head>
 <body>
@@ -150,7 +185,7 @@
         <div class="profile-row">
           <div class="avatar">
             <!-- placeholder youth/cricket image from Wikimedia Commons -->
-            <img alt="Robin Yadav (youth player placeholder)" src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Cricket_being_played_on_a_Summer_Morning_in_India.jpg">
+            <img alt="Robin Yadav (youth player placeholder)" src="Robin Image.jpg">
           </div>
 
           <div class="info">
@@ -180,7 +215,8 @@
           </ul>
         </div>
 
-        <a class="btn" href="#" onclick="alert('Highlights button (placeholder)')">Watch Highlights</a>
+        <button class="btn" onclick="openVideo()">Watch Highlights</button>
+
 
         <footer>
           <p><strong>Image credits & license:</strong> Hero stadium image and player photos are from Wikimedia Commons / Wikipedia (free-to-use images). See the bottom of this page for exact image sources and license notes.</p>
@@ -216,11 +252,40 @@
 
       <div class="side-card">
         <h3>Contact / Join Trials</h3>
-        <p style="font-size:13px; color:#444">To register Robin for trials or matches, contact his coach or local club (details you can add here).</p>
+        <p style="font-size:13px; color:#444">To register Robin for trials or matches, contact his coach or local club.
+           <br/>Contact: +91-8789208426|
+        </p>
       </div>
     </aside>
 
   </div>
   
+  <!-- VIDEO POPUP -->
+<div id="videoModal" class="video-modal">
+  <div class="video-content">
+    <span class="close-btn" onclick="closeVideo()">✖</span>
+
+    <!-- Replace the video source link below with your highlight video -->
+    <video id="highlightVideo" width="100%" controls>
+      <source src="Robin.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</div>
+
+<script>
+function openVideo() {
+  document.getElementById("videoModal").style.display = "flex";
+  document.getElementById("highlightVideo").play();
+}
+
+function closeVideo() {
+  let vid = document.getElementById("highlightVideo");
+  vid.pause();
+  vid.currentTime = 0;
+  document.getElementById("videoModal").style.display = "none";
+}
+</script>
+
 </body>
 </html>
