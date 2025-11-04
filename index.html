@@ -435,11 +435,17 @@ function closeVideo() {
       const data = await res.json();
 
       newsList.innerHTML = "";
-      data.results.forEach(article => {
-        const li = document.createElement("li");
-        li.textContent = article.title;
-        newsList.appendChild(li);
-      });
+     data.results.forEach(article => {
+  const li = document.createElement("li");
+
+  li.innerHTML = `
+    <a href="${article.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:inherit;">
+      ${article.title}
+    </a>
+  `;
+
+  newsList.appendChild(li);
+});
 
       // Notification Trigger
       const latestHeadline = data.results[0].title;
@@ -474,6 +480,7 @@ function closeVideo() {
 
 </body>
 </html>
+
 
 
 
