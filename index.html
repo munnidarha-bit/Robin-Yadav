@@ -207,6 +207,21 @@
   font-size: 18px;
 }
 
+#news-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+#news-list li {
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+}
 
 
 
@@ -328,291 +343,56 @@ function closeVideo() {
 }
 </script>
 
-  <div id="cricket-news">
-  Loading cricket news... 🏏
-</div>
-
-<!-- ======== Cricket News Section (Full feature: ticker + thumbnail cards + notifications) ======== -->
-<style>
-  /* Container placed to blend with site look */
-  #cricket-news-section {
-    width: 90%;
-    max-width: 1000px;
-    margin: 28px auto;
-    font-family: inherit;
-  }
-
-  /* Ticker (scrolling headline bar) */
-  .news-ticker {
-    background:#0b76d1;
-    color:#fff;
-    border-radius:8px;
-    padding:10px 12px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    margin-bottom: 14px;
-  }
-  .news-ticker .ticker-track {
-    display:inline-block;
-    white-space:nowrap;
-    will-change:transform;
-    animation: ticker 18s linear infinite;
-    font-weight:700;
-    font-size:15px;
-  }
-  @keyframes ticker {
-    0%   { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
-  }
-
-  /* Grid of cards */
-  #news-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
-  }
-  @media (max-width:900px){ #news-grid{ grid-template-columns: repeat(2,1fr);} }
-  @media (max-width:520px){ #news-grid{ grid-template-columns: 1fr; } }
-
-  .news-card {
-    background:#fff;
-    border-radius:10px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-    overflow: hidden;
-    display:flex;
-    flex-direction:column;
-    min-height:120px;
-    transition: transform .18s ease, box-shadow .18s ease;
-    border:1px solid rgba(0,0,0,0.04);
-  }
-  .news-card:hover{ transform: translateY(-6px); box-shadow: 0 14px 28px rgba(0,0,0,0.10); }
-
-  .news-thumb {
-    width:100%;
-    height:140px;
-    object-fit:cover;
-    background:#eee;
-  }
-
-  .news-body {
-    padding:10px 12px;
-    flex:1;
-    display:flex;
-    flex-direction:column;
-  }
-  .news-title {
-    font-weight:700;
-    font-size:15px;
-    margin:0 0 8px 0;
-    color:#111;
-    line-height:1.25;
-    flex:1;
-    text-decoration:none;
-  }
-  .news-meta {
-    font-size:12px;
-    color:#666;
-    margin-bottom:8px;
-  }
-  .news-actions {
-    display:flex;
-    gap:8px;
-    align-items:center;
-  }
-  .read-btn {
-    background:#0b76d1;
-    color:#fff;
-    padding:7px 10px;
-    border-radius:8px;
-    text-decoration:none;
-    font-weight:700;
-    font-size:13px;
-  }
-  .source-link {
-    color:#0b76d1;
-    font-size:13px;
-    text-decoration:none;
-  }
-
-  /* fallback message */
-  #news-error {
-    text-align:center;
-    color:#b00020;
-    padding:10px;
-  }
-</style>
-
-<div id="cricket-news-section">
-  <!-- Ticker -->
-  <div class="news-ticker" aria-hidden="false">
-    <div id="ticker-track" class="ticker-track">Loading latest cricket headlines…</div>
-  </div>
-
-  <!-- Cards -->
-  <div id="news-grid" aria-live="polite">
-    <!-- JS will inject .news-card elements here -->
-  </div>
-
-  <div id="news-error" style="display:none;">❌ News load nahi ho pai. Thodi der baad try karein.</div>
+<div class="card">
+  <h2>📰 Live Cricket Updates</h2>
+  <ul id="news-list"></ul>
 </div>
 
 <script>
-/* === CONFIG === */
-const NEWS_API = "https://newsdata.io/api/1/news?apikey=pub_8a9b2ba63c4b4ea69e30d99d0166fde4&category=sports&language=hi";
-const MAX_CARDS = 6;            // number of cards to show
-const REFRESH_MS = 30000;       // refresh interval
-const PLACEHOLDER_IMAGE = "https://via.placeholder.com/800x450?text=Cricket";
+  const apiKey = "pub_8a9b2ba63c4b4ea69e30d99d0166fde4";
+  const newsList = document.getElementById("news-list");
+  let lastHeadline = "";
 
-/* === UTILS === */
-function safeOpen(url) {
-  if (!url) return;
-  window.open(url, "_blank", "noopener");
-}
-function formatSource(item) {
-  // Try multiple fields commonly present in APIs
-  return item.source_id || item.source || (item.creator && item.creator[0]) || "Source";
-}
-
-/* === RENDER HELPERS === */
-function setTicker(texts) {
-  const track = document.getElementById("ticker-track");
-  if (!texts || texts.length === 0) {
-    track.textContent = "No cricket headlines available right now.";
-    return;
-  }
-  // Join headlines with separators
-  track.textContent = texts.map(t => "🏏 " + t).join("   •   ");
-  // Restart animation by reflow trick to avoid stuck track after content change
-  track.style.animation = "none";
-  void track.offsetWidth;
-  track.style.animation = null;
-}
-
-function renderCards(items) {
-  const grid = document.getElementById("news-grid");
-  grid.innerHTML = ""; // clear
-  if (!items || items.length === 0) {
-    document.getElementById("news-error").style.display = "block";
-    return;
-  }
-  document.getElementById("news-error").style.display = "none";
-
-  items.slice(0, MAX_CARDS).forEach(item => {
-    const title = item.title || item.description || "No title";
-    // try multiple image fields
-    const img = item.image_url || item.image || item.thumbnail || (item.media && item.media[0]) || PLACEHOLDER_IMAGE;
-    // try link fields
-    const link = item.link || item.url || item.source_url || item.guid || null;
-    // publication date if present
-    const date = item.pubDate || item.pubDateUtc || item.pubDateGMT || item.pubDate || "";
-
-    const card = document.createElement("article");
-    card.className = "news-card";
-
-    const imgEl = document.createElement("img");
-    imgEl.className = "news-thumb";
-    imgEl.src = img || PLACEHOLDER_IMAGE;
-    imgEl.alt = title.slice(0,80);
-    imgEl.onerror = () => { imgEl.src = PLACEHOLDER_IMAGE; };
-
-    const body = document.createElement("div");
-    body.className = "news-body";
-
-    const h = document.createElement("a");
-    h.className = "news-title";
-    h.href = link || "#";
-    h.target = "_blank";
-    h.rel = "noopener";
-    h.textContent = title;
-
-    const meta = document.createElement("div");
-    meta.className = "news-meta";
-    meta.textContent = `${formatSource(item)} ${date ? " • " + new Date(date).toLocaleString() : ""}`;
-
-    const actions = document.createElement("div");
-    actions.className = "news-actions";
-
-    const read = document.createElement("a");
-    read.className = "read-btn";
-    read.href = link || "#";
-    read.target = "_blank";
-    read.rel = "noopener";
-    read.textContent = "Read More";
-    read.onclick = (e) => { if (!link) e.preventDefault(); };
-
-    const src = document.createElement("a");
-    src.className = "source-link";
-    src.href = link || "#";
-    src.target = "_blank";
-    src.rel = "noopener";
-    src.textContent = link ? "Open" : "No link";
-
-    actions.appendChild(read);
-    actions.appendChild(src);
-
-    body.appendChild(h);
-    body.appendChild(meta);
-    body.appendChild(actions);
-
-    card.appendChild(imgEl);
-    card.appendChild(body);
-    grid.appendChild(card);
-  });
-}
-
-/* === NOTIFICATION BEHAVIOR === */
-let lastNotifiedHeadline = null;
-function maybeNotify(headline) {
-  if (!("Notification" in window)) return;
-  // Only notify when permission granted and headline changed
-  if (Notification.permission === "granted" && headline && headline !== lastNotifiedHeadline) {
+  async function loadNews() {
     try {
-      new Notification("Cricket: " + headline.slice(0, 60), {
-        body: headline.length > 120 ? headline.slice(0,120)+"…" : headline,
-        tag: "cricket-news", // replace old notification for same tag
-        renotify: false
+      const res = await fetch(`https://newsdata.io/api/1/news?apikey=${apiKey}&q=cricket&language=en`);
+      const data = await res.json();
+
+      newsList.innerHTML = "";
+      data.results.forEach(article => {
+        const li = document.createElement("li");
+        li.textContent = article.title;
+        newsList.appendChild(li);
       });
-      lastNotifiedHeadline = headline;
-    } catch (e) {
-      console.warn("Notification error", e);
+
+      // Notification Trigger
+      const latestHeadline = data.results[0].title;
+      if (latestHeadline !== lastHeadline) {
+        showNotification(latestHeadline);
+        lastHeadline = latestHeadline;
+      }
+    } catch (error) {
+      console.log("News Load Error:", error);
     }
   }
-}
 
-/* === FETCH & UPDATE === */
-async function fetchAndRender() {
-  try {
-    const res = await fetch(NEWS_API);
-    if (!res.ok) throw new Error("Network response not ok");
-    const data = await res.json();
-    const items = (data && data.results) ? data.results : [];
-    // prepare ticker text list (top headlines)
-    const headlines = items.slice(0, 10).map(it => it.title || it.description || "—");
-    setTicker(headlines);
-    renderCards(items);
-    // notify top one (only if changed)
-    if (items.length > 0) maybeNotify(items[0].title || items[0].description || "");
-  } catch (err) {
-    console.error("Failed loading news:", err);
-    document.getElementById("news-grid").innerHTML = "";
-    document.getElementById("ticker-track").textContent = "Failed to load cricket news.";
-    document.getElementById("news-error").style.display = "block";
+  // Notification Function
+  function showNotification(text) {
+    if (Notification.permission === "granted") {
+      new Notification("🏏 Cricket Update", { body: text });
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+          new Notification("🏏 Cricket Update", { body: text });
+        }
+      });
+    }
   }
-}
 
-/* === INIT === */
-document.addEventListener("DOMContentLoaded", () => {
-  // ask for notification permission once (non-intrusive)
-  if ("Notification" in window && Notification.permission === "default") {
-    Notification.requestPermission().catch(()=>{});
-  }
-  fetchAndRender();
-  // refresh regularly
-  setInterval(fetchAndRender, REFRESH_MS);
-});
+  // Load news initially + refresh every 60 seconds
+  loadNews();
+  setInterval(loadNews, 60000);
 </script>
-<!-- ======== End Cricket News Section ======== -->
 
 
 
