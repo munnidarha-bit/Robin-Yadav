@@ -207,45 +207,42 @@
   font-size: 18px;
 }
 
-.news-title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 22px;
-  font-weight: bold;
-  color: #222;
-}
-
-#news-box {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.news-item {
-  padding: 12px 16px;
+.news-card {
   background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  transition: 0.25s ease;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  margin-top: 20px;
 }
 
-.news-item:hover {
-  background: #f9f9f9;
-  transform: scale(1.01);
+.news-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  color: #046307;
+  text-align: center;
 }
 
-.news-item h3 {
+#news-list {
+  list-style: none;
+  padding: 0;
   margin: 0;
-  font-size: 18px;
-  color: #111;
-  font-weight: 600;
 }
 
-.news-item p {
-  margin: 5px 0 0;
-  font-size: 14px;
-  color: #555;
+#news-list li {
+  background: #f4fff4;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  border: 1px solid #cde8ce;
 }
+
+#news-list li:hover {
+  background: #dfffe1;
+}
+
 
 
 
@@ -340,10 +337,11 @@
 
   </div>
 
-<div class="card">
-  <h2 class="news-title">Latest Cricket News</h2>
-  <div id="news-box"></div>
+<div class="card news-card">
+  <h3 class="news-title">📢 Live Cricket Updates</h3>
+  <ul id="news-list"></ul>
 </div>
+
 
 
   
@@ -377,61 +375,55 @@ function closeVideo() {
 
 
 <script>
-  const apiKey = "pub_8a9b2ba63c4b4ea69e30d99d0166fde4";
-  const newsList = document.getElementById("news-list");
-  let lastHeadline = "";
+const apiKey = "pub_8a9b2ba63c4b4ea69e30d99d0166fde4";
+const newsList = document.getElementById("news-list");
+let lastHeadline = "";
 
-  async function loadNews() {
-    try {
-      const res = await fetch(`https://newsdata.io/api/1/news?apikey=${apiKey}&q=cricket&language=en`);
-      const data = await res.json();
+async function loadNews() {
+  try {
+    const res = await fetch(`https://newsdata.io/api/1/news?apikey=${apiKey}&q=cricket&language=hi`);
+    const data = await res.json();
 
-      newsList.innerHTML = "";
-     data.results.forEach(article => {
-  const li = document.createElement("li");
+    newsList.innerHTML = "";
+    data.results.forEach(article => {
+      const li = document.createElement("li");
+      li.textContent = article.title;
+      li.onclick = () => window.open(article.link, "_blank", "noopener,noreferrer");
+      newsList.appendChild(li);
+    });
 
-  li.innerHTML = `
-    <a href="${article.link}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:inherit;">
-      ${article.title}
-    </a>
-  `;
-
-  newsList.appendChild(li);
-});
-
-      // Notification Trigger
-      const latestHeadline = data.results[0].title;
-      if (latestHeadline !== lastHeadline) {
-        showNotification(latestHeadline);
-        lastHeadline = latestHeadline;
-      }
-    } catch (error) {
-      console.log("News Load Error:", error);
+    const latestHeadline = data.results[0].title;
+    if (latestHeadline !== lastHeadline) {
+      showNotification(latestHeadline);
+      lastHeadline = latestHeadline;
     }
-  }
 
-  // Notification Function
-  function showNotification(text) {
-    if (Notification.permission === "granted") {
-      new Notification("🏏 Cricket Update", { body: text });
-    } else if (Notification.permission !== "denied") {
-      Notification.requestPermission().then(permission => {
-        if (permission === "granted") {
-          new Notification("🏏 Cricket Update", { body: text });
-        }
-      });
-    }
+  } catch (error) {
+    console.log("News Load Error:", error);
   }
+}
 
-  // Load news initially + refresh every 60 seconds
-  loadNews();
-  setInterval(loadNews, 60000);
+// Notification function
+function showNotification(headline) {
+  if (Notification.permission === "granted") {
+    new Notification("🟢 New Cricket Update", { body: headline });
+  }
+}
+
+// Ask permission 1 time
+if (Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
+
+loadNews();
+setInterval(loadNews, 60000);
 </script>
 
 
 
 </body>
 </html>
+
 
 
 
