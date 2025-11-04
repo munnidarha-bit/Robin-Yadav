@@ -18,7 +18,7 @@
   <!-- Primary Meta Tags -->
 <title>Robin Yadav - Young Cricket Star from Lakhisarai, Bihar</title>
 <meta name="title" content="Robin Yadav - Young Cricket Star from Lakhisarai, Bihar">
-<meta name="description" content="Right-hand batsman and rising youth cricket star from Iton, Lakhisarai, Bihar. Watch highlights, journey, achievements, and performance updates.The one and only the captain of the team of Mananpur who played greatly for his captain and his school. Recently he won the best cricketer award from his school.">
+<meta name="description" content="Right-hand batsman and rising youth cricket star from Iton, Lakhisarai, Bihar. Watch highlights, journey, achievements, and performance updates.The one and only the captain of the team of Mananpur who played greatly for his captain and his school. Recently he won the best cricketer award from his school. In this Website with The bio-data of player you gets the news related to the cricket and the notification without any type of ADDS.">
 
 <!-- Open Graph / Facebook / WhatsApp Preview -->
 <meta property="og:type" content="website">
@@ -207,85 +207,44 @@
   font-size: 18px;
 }
 
-/* ====== Cricket news card — matches existing card theme ====== */
-/* Wrapper that you should add below Contact/Join Trials (HTML: <div id="cricket-news-wrapper">...) */
-#cricket-news-wrapper {
-  width: 100%;
-  max-width: 420px;        /* same column width as other small cards */
-  margin: 18px 0 0 0;      /* placed just under the previous card */
-  display: block;
-  box-sizing: border-box;
-  clear: both;             /* ensure it doesn't float beside anything */
+.news-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #222;
 }
 
-/* Card visual — like other boxes (white card on green background) */
-#cricket-news-card {
+#news-box {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.news-item {
+  padding: 12px 16px;
   background: #ffffff;
-  border-radius: 12px;
-  padding: 14px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  border: 1px solid rgba(0,0,0,0.04);
-  color: #153a2e;          /* dark-green-ish text to match theme */
-  font-family: inherit;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  transition: 0.25s ease;
 }
 
-/* Title style */
-#cricket-news-card h3 {
-  margin: 0 0 10px 0;
-  font-size: 18px;
-  color: #0b7a4a;          /* heading green similar to other cards */
-  font-weight: 700;
+.news-item:hover {
+  background: #f9f9f9;
+  transform: scale(1.01);
 }
 
-/* News list inside the card */
-#cricket-news-list {
-  list-style: none;
-  padding: 0;
+.news-item h3 {
   margin: 0;
-  display: block;
-}
-
-/* Each headline styled like a small card inside */
-#cricket-news-list li {
-  background: #f8fbf7;           /* subtle off-white to separate items */
-  margin: 8px 0;
-  padding: 10px 12px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  font-size: 18px;
+  color: #111;
   font-weight: 600;
+}
+
+.news-item p {
+  margin: 5px 0 0;
   font-size: 14px;
-  color: #163f2f;
-  cursor: pointer;
-}
-
-/* Hover effect matching site micro-interactions */
-#cricket-news-list li:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
-}
-
-/* Small meta / source line if present */
-#cricket-news-list li .meta {
-  display: block;
-  font-size: 12px;
-  color: #6b856f;
-  margin-top: 6px;
-  font-weight: 500;
-}
-
-/* Ensure card fits narrow screens (same column behaviour as other small cards) */
-@media (max-width: 900px) {
-  #cricket-news-wrapper {
-    max-width: 100%;
-  }
-  #cricket-news-card h3 { font-size: 16px; }
-  #cricket-news-list li { font-size: 13px; padding: 9px 10px; }
-}
-
-/* Accessibility: make sure focus is visible when user tabs headlines */
-#cricket-news-list li:focus {
-  outline: 3px solid rgba(11,118,209,0.15);
-  outline-offset: 3px;
+  color: #555;
 }
 
 
@@ -381,14 +340,11 @@
 
   </div>
 
-  <div id="cricket-news-wrapper">
-  <div id="cricket-news-card">
-    <h3>🏏 Live Cricket Updates</h3>
-    <ul id="cricket-news-list">
-      <li>Loading latest cricket news...</li>
-    </ul>
-  </div>
+<div class="card">
+  <h2 class="news-title">Latest Cricket News</h2>
+  <div id="news-box"></div>
 </div>
+
 
   
   <!-- VIDEO POPUP -->
@@ -480,6 +436,7 @@ function closeVideo() {
 
 </body>
 </html>
+
 
 
 
