@@ -345,19 +345,41 @@ function closeVideo() {
 </div>
 
 <script>
-fetch("https://newsdata.io/api/1/news?apikey=pub_410428fddae8e7eec2f9e01c422&category=sports&language=hi")
-  .then(res => res.json())
-  .then(data => {
+function loadCricketNews() {
+  fetch("https://newsdata.io/api/1/news?apikey=pub_8a9b2ba63c4b4ea69e30d99d0166fde4&category=sports&language=hi")
+    .then(res => res.json())
+    .then(data => {
       let latest = data.results[0].title;
-      document.getElementById("cricket-news").innerHTML = "🏏 लाइव क्रिकेट न्यूज़: " + latest;
-  })
-  .catch(() => {
-    document.getElementById("cricket-news").innerHTML = "❌ News load nahi ho pai";
-  });
+      document.getElementById("cricket-news").innerHTML = "🏏 Live Cricket News: " + latest;
+
+      // Notification Section
+      if (Notification.permission === "granted") {
+        new Notification("Cricket Update 🏏", {
+          body: latest,
+        });
+      }
+    })
+    .catch(() => {
+      document.getElementById("cricket-news").innerHTML = "❌ News load nahi ho pai. Internet check karein.";
+    });
+}
+
+// First Load
+loadCricketNews();
+
+// Auto Refresh Every 30 Seconds
+setInterval(loadCricketNews, 30000);
+
+// Ask Notification Permission
+if (Notification.permission !== "granted") {
+  Notification.requestPermission();
+}
 </script>
+
 
 </body>
 </html>
+
 
 
 
