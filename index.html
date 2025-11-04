@@ -349,10 +349,24 @@ function loadCricketNews() {
   fetch("https://newsdata.io/api/1/news?apikey=pub_8a9b2ba63c4b4ea69e30d99d0166fde4&category=sports&language=hi")
     .then(res => res.json())
     .then(data => {
-      let latest = data.results[0].title;
-      document.getElementById("cricket-news").innerHTML = "🏏 Live Cricket News: " + latest;
 
-      // Notification Section
+      let box = "<h3 style='text-align:center;'>🏏 Live Cricket Updates</h3>";
+      box += "<ul style='list-style:none;padding:0;'>";
+
+      // ✅ Loop ke through 6 news show kar rahe hain
+      data.results.slice(0, 6).forEach(news => {
+        box += `
+          <li style="background:#fff;margin:8px 0;padding:10px;border-radius:8px;box-shadow:0 0 6px rgba(0,0,0,0.1);">
+            ${news.title}
+          </li>
+        `;
+      });
+
+      box += "</ul>";
+      document.getElementById("cricket-news").innerHTML = box;
+
+      // ✅ Notification (sirf sabse new wali)
+      let latest = data.results[0].title;
       if (Notification.permission === "granted") {
         new Notification("Cricket Update 🏏", {
           body: latest,
@@ -360,14 +374,14 @@ function loadCricketNews() {
       }
     })
     .catch(() => {
-      document.getElementById("cricket-news").innerHTML = "❌ News load nahi ho pai. Internet check karein.";
+      document.getElementById("cricket-news").innerHTML = "❌ News load nahi ho pai.";
     });
 }
 
-// First Load
+// First time load
 loadCricketNews();
 
-// Auto Refresh Every 30 Seconds
+// Har 30 second me refresh
 setInterval(loadCricketNews, 30000);
 
 // Ask Notification Permission
@@ -379,6 +393,7 @@ if (Notification.permission !== "granted") {
 
 </body>
 </html>
+
 
 
 
