@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- OneSignal Notification SDK -->
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+<script>
+  window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "0caa1e16-0f22-446f-bf37-d10ddd2801c7", // <-- yaha apna app id paste karo
+    });
+  });
+</script>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="google-site-verification" content="HXVrPRGAzuLwS0owYyQ9wuChl9jFEiiERXLDsTd_Kg4" />
@@ -196,6 +207,21 @@
   font-size: 18px;
 }
 
+  #cricket-news {
+  text-align: center;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 700px;
+  padding: 14px;
+  background: #f3f3f3;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  box-shadow: 0 0 8px rgba(0,0,0,0.15);
+}
+
+
+
   </style>
 </head>
 <body>
@@ -314,8 +340,25 @@ function closeVideo() {
 }
 </script>
 
+  <div id="cricket-news">
+  Loading cricket news... 🏏
+</div>
+
+<script>
+fetch("https://newsdata.io/api/1/news?apikey=pub_410428fddae8e7eec2f9e01c422&category=sports&language=hi")
+  .then(res => res.json())
+  .then(data => {
+      let latest = data.results[0].title;
+      document.getElementById("cricket-news").innerHTML = "🏏 लाइव क्रिकेट न्यूज़: " + latest;
+  })
+  .catch(() => {
+    document.getElementById("cricket-news").innerHTML = "❌ News load nahi ho pai";
+  });
+</script>
+
 </body>
 </html>
+
 
 
 
