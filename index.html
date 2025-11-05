@@ -394,7 +394,7 @@ async function loadNews() {
     data.results.forEach(article => {
       const li = document.createElement("li");
       li.textContent = article.title;
-      li.onclick = () => window.open(article.link, "_blank", "noopener,noreferrer");
+      // li.onclick = () => window.open(article.link, "_blank", "noopener,noreferrer");
       newsList.appendChild(li);
     });
 
@@ -429,6 +429,7 @@ setInterval(loadNews, 1200000);
 
 </body>
 </html>
+
 
 
 
