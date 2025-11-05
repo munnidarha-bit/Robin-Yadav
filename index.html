@@ -349,6 +349,63 @@
       </div>
   </div>
 
+  <!-- Floating Chat Button -->
+<a href="chat.html" class="chat-open-btn">
+    <img src="chat.avif" alt="Chat" />
+</a>
+
+<style>
+.chat-open-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px; /* ✅ Left Corner */
+    background: white;
+    border-radius: 50%;
+    width: 65px;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 0px 20px rgba(0, 150, 255, 0.7); /* ✅ Glow */
+    cursor: pointer;
+    animation: bounce 1.5s infinite; /* ✅ Bounce */
+    transition: 0.3s;
+}
+
+/* Glow stronger when hover */
+.chat-open-btn:hover {
+    transform: scale(1.12);
+    box-shadow: 0px 0px 25px rgba(0, 150, 255, 1);
+}
+
+/* ✅ Bounce Animation */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* ✅ Chat icon image fit */
+.chat-open-btn img {
+    width: 40px;
+    height: 40px;
+}
+
+/* ✅ Small for Mobile */
+@media (max-width: 600px) {
+  .chat-open-btn {
+      width: 50px;
+      height: 50px;
+      bottom: 15px;
+      left: 15px;
+  }
+
+  .chat-open-btn img {
+      width: 28px;
+      height: 28px;
+  }
+}
+</style>
+
 
 
 
@@ -432,6 +489,7 @@ setInterval(loadNews, 1200000);
 
 </body>
 </html>
+
 
 
 
