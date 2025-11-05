@@ -32,7 +32,18 @@
   .msg{max-width:86%;padding:8px 10px;border-radius:10px;line-height:1.35}
   .msg.bot{align-self:flex-start;background:linear-gradient(180deg,#0b2b3a,#062a31);border:1px solid rgba(255,255,255,0.02)}
   .msg.user{align-self:flex-end;background:linear-gradient(180deg,#071029,#081526);border:1px solid rgba(255,255,255,0.02)}
-  #chatFooter{padding:8px;display:flex;gap:8px;border-top:1px solid rgba(255,255,255,0.03);align-items:center}
+  #chatFooter{
+  padding:8px;
+  display:flex;
+  gap:8px;
+  border-top:1px solid rgba(255,255,255,0.03);
+  align-items:center;
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(180deg,#071028,#051224);
+  z-index: 9999;
+}
+
   #chatInput{flex:1;padding:10px 12px;border-radius:8px;border:0;background:rgba(255,255,255,0.02);color:inherit;outline:none}
   #sendBtn{background:var(--accent);color:white;border:0;padding:8px 12px;border-radius:8px;cursor:pointer}
   .quickRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
@@ -43,6 +54,15 @@
   .small{font-size:12px;color:var(--muted)}
   @media(max-width:768px){#chatWindow{right:10px;bottom:84px;width:92vw}#chatBtn{right:10px;bottom:10px;z-index: 1000;}}
   @media (max-width: 600px){#sendBtn{width: 100%; top: 0; position; sticky;z-index: 1000;}}
+  @media(max-width:768px){
+  #chatInput {
+    width: 100%;
+  }
+  #chatBody {
+    padding-bottom: 70px; /* space banane ke liye ke input dab na jaye */
+  }
+}
+
 </style>
 </head>
 <body>
@@ -85,6 +105,35 @@ const profiles = {
     name: "Robin Yadav",
     bio: "Right-handed all-rounder + wicketkeeper. Best shot: Cover Drive. Team: Mananpur Team. Goal: National cricketer.",
   },
+
+   
+  "virat kohli": {
+name: "Virat Kohli"  
+dob: "5 Nov 1988"  
+role: "Top Order Batsman"  
+bio: "Right Handed"  
+
+  },
+
+  "surya": {
+ name: "Suryakumar Yadav (SKY)"  
+dob: "14 Sept 1990"  
+role: "Middle Order Batsman"  
+
+  },
+
+  "sky": {
+ name: "Suryakumar Yadav (SKY)"  
+dob: "14 Sept 1990"  
+role: "Middle Order Batsman"  
+bio: "Right Handed  
+      "Right Handed  
+         India, Mumbai Indians  
+         Strike Rate, (T20I) 175+  
+        Mr. 360° Shot Maker 🌌🔥"
+  
+},
+
   "hardik pandya": {
     name: "Hardik Pandya",
     dob: "11 Oct 1993",
@@ -353,5 +402,6 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<
 
 </body>
 </html>
+
 
 
