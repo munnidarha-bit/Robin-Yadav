@@ -46,8 +46,8 @@
   z-index: 999;
 }
 
-  #chatInput{flex:1;padding:10px 12px;border-radius:8px;border:0;background:rgba(255,255,255,0.02);color:inherit;outline:none;width:100%;hieght:42px}
-  #sendBtn{background:var(--accent);color:white;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;hieght:42px}
+  #chatInput{flex:1;padding:10px 12px;border-radius:8px;border:0;background:rgba(255,255,255,0.02);color:inherit;outline:none;width:400px;hieght:42px}
+  #sendBtn{background:var(--accent);color:white;border:0;padding:8px 12px;border-radius:8px;cursor:pointer;hieght:42px;flex-shrink:0}
   .quickRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
   .quickBtn{background:rgba(255,255,255,0.03);padding:6px 10px;border-radius:999px;cursor:pointer;font-size:13px;color:var(--muted);border:1px solid rgba(255,255,255,0.02)}
   /* Table style inside chat */
@@ -57,9 +57,10 @@
   @media(max-width:768px){#chatWindow{right:10px;bottom:84px;width:92vw}#chatBtn{right:10px;bottom:10px;z-index: 1000;}}
   @media (max-width: 600px){#sendBtn{width: 100%; top: 0; position; sticky;z-index: 1000;}}
   @media (max-width: 600px) {
-  #chatFooter input[type="text"] {
+   #chatInput{
     font-size: 14px;
     height: 40px;
+    width:250px;
   }
    #sendBtn{
     height: 40px;
@@ -403,6 +404,7 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<
 
 </body>
 </html>
+
 
 
 
