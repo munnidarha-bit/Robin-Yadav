@@ -21,7 +21,7 @@
   box-shadow:none;
   display:flex; /* show by default */
   flex-direction:column;
-  overflow:hidden;
+  overflow-y: auto;
   z-index:99998;
 }
 
@@ -38,10 +38,11 @@
   gap:8px;
   border-top:1px solid rgba(255,255,255,0.03);
   align-items:center;
-  position: sticky;
+  position: fixed;
   bottom: 0;
+  left: 0;
   background: linear-gradient(180deg,#071028,#051224);
-  z-index: 9999;
+  z-index: 999;
 }
 
   #chatInput{flex:1;padding:10px 12px;border-radius:8px;border:0;background:rgba(255,255,255,0.02);color:inherit;outline:none}
@@ -79,7 +80,7 @@
   </div>
 
   <div id="chatBody" aria-live="polite">
-    <div class="msg bot">Namaste! Main Robin's Cricket Assistant hoon. Try: "Robin Yadav", "Hardik Pandya", "Show stats Hardik Pandya", "IPL winners", " ODI winners", "female players".</div>
+    <div class="msg bot">Namaste! Main Cricket Assistant hoon. Try: "Robin Yadav", "Hardik Pandya", "Show stats Hardik Pandya", "IPL winners", " ODI winners", "female players".</div>
 
     <div class="quickRow" aria-hidden="false">
       <div class="quickBtn" data-q="Robin Yadav">Robin</div>
@@ -137,7 +138,28 @@ const profiles = {
     dob: "08 Sep 1999",
     role: "Top-order batsman",
     bio: "Elegant opener known for timing & temperament. GT captain (2024).",
-  }
+  },
+  "virat kohli": {
+  name: "Virat Kohli",
+  dob: "05 Nov 1988",
+  role: "Top-order batsman",
+  bio: "Modern batting great known for consistency & aggression. Former India captain across formats.",
+},
+
+"ms dhoni": {
+  name: "MS Dhoni",
+  dob: "07 Jul 1981",
+  role: "Wicketkeeper-batsman",
+  bio: "Legendary finisher & tactician. Led India to all major ICC trophies; iconic CSK captain.",
+},
+
+"suryakumar yadav": {
+  name: "Suryakumar Yadav",
+  dob: "14 Sep 1990",
+  role: "Middle-order batsman",
+  bio: "Dynamic T20 specialist known for 360° stroke play and fearless batting approach.",
+}
+
 };
 
 /* World famous male players (short) */
@@ -376,6 +398,7 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<
 
 </body>
 </html>
+
 
 
 
