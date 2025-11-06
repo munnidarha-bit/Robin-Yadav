@@ -22,7 +22,7 @@
   box-shadow:none;
   display:flex; /* show by default */
   flex-direction:column;
-  overflow-y: auto;
+  overflow: hidden;
   z-index:99998;
 }
 
@@ -78,11 +78,11 @@
 
 
 <!-- Chat Window -->
-<div id="chatWindow" role="dialog" aria-hidden="true" aria-label="Robin's Cricket Chat">
+<div id="chatWindow" role="dialog" aria-hidden="true" aria-label=" Cricket Fact Chat">
   <div id="chatHeader">
     <div class="logo">RY</div>
     <div>
-      <div class="title">Robin's Cricket Assistant</div>
+      <div class="title"> Cricket Assistant</div>
       <div class="small">Type player name, "show stats <name>", "ipl winners", "odi winners", "female players"</div>
     </div>
   </div>
@@ -283,6 +283,7 @@ function appendMsg(text, who='bot'){
   el.innerHTML = text.replace(/\n/g,'<br/>');
   chatBody.appendChild(el);
   chatBody.scrollTop = chatBody.scrollHeight;
+
 }
 
 /* Main static query handler */
@@ -406,6 +407,7 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<
 
 </body>
 </html>
+
 
 
 
