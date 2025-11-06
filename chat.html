@@ -40,7 +40,7 @@
   align-items:center;
   position: fixed;
   bottom: 0;
-  left: 0;
+  
     width:100%:
   background: linear-gradient(180deg,#071028,#051224);
   z-index: 999;
@@ -56,14 +56,18 @@
   .small{font-size:12px;color:var(--muted)}
   @media(max-width:768px){#chatWindow{right:10px;bottom:84px;width:92vw}#chatBtn{right:10px;bottom:10px;z-index: 1000;}}
   @media (max-width: 600px){#sendBtn{width: 100%; top: 0; position; sticky;z-index: 1000;}}
-  @media(max-width:768px){
-  #chatInput {
-    width: 100%;
+  @media (max-width: 600px) {
+  #chatFooter input[type="text"] {
+    font-size: 14px;
+    height: 40px;
   }
-  #chatBody {
-    padding-bottom: 70px; /* space banane ke liye ke input dab na jaye */
+   #sendBtn{
+    height: 40px;
+    padding: 0 14px;
+    font-size: 14px;
   }
 }
+
 
 </style>
 </head>
@@ -399,6 +403,7 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<
 
 </body>
 </html>
+
 
 
 
