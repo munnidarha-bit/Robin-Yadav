@@ -189,7 +189,7 @@ function appendMsg(text, who='bot', extraClass=''){
   - If CORS error appears in console, this endpoint may block direct browser requests; then you'll need a backend.
 */
 const API_KEY = "AIzaSyDRA2Fm_6iyjf0xv0b3zMyTeEk7gGnaixk"; // <-- paste your key here (string)
-const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
+const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
 /* Basic throttle: prevent too many rapid calls (simple client-side guard) */
 let lastCallTime = 0;
@@ -365,3 +365,4 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<
 
 </body>
 </html>
+
