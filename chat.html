@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
    <link rel="shortcut icon" href="favicon.jpg" type="image/x-icon">
-<title>Robin's Cricket Chatbot — Static Data</title>
+<title>Robin's Cricket Chatbot — Live (Gemini)</title>
 <style>
   :root{--accent:#1e90ff;--bg:#071226;--card:#0d1b2a;--muted:#9fb0c8}
   body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Noto Sans',Arial;background:linear-gradient(180deg,#04111b,#031024);color:#e8f3ff}
@@ -56,9 +56,10 @@
   .table{width:100%;border-collapse:collapse;background:rgba(255,255,255,0.02);border-radius:8px;overflow:hidden}
   .table th,.table td{padding:8px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.03);text-align:left}
   .small{font-size:12px;color:var(--muted)}
+  .muted{color:var(--muted);font-size:12px}
   @media(max-width:768px){#chatWindow{right:10px;bottom:84px;width:92vw}#chatBtn{right:10px;bottom:10px;z-index: 1000;}}
-  @media (max-width: 600px){#sendBtn{width: 100%; top: 0; position; sticky;z-index: 1000;}}
-  @media (max-width: 600px) {
+/* small mobile fixes */
+@media (max-width: 600px) {
    #chatInput{
     font-size: 14px;
     height: 40px;
@@ -71,20 +72,17 @@
      width:70px;
   }
 }
-
-
 </style>
 </head>
 <body>
 
-
 <!-- Chat Window -->
-<div id="chatWindow" role="dialog" aria-hidden="true" aria-label=" Cricket Fact Chat">
+<div id="chatWindow" role="dialog" aria-hidden="false" aria-label=" Cricket Fact Chat">
   <div id="chatHeader">
     <div class="logo">RY</div>
     <div>
       <div class="title"> Cricket Assistant</div>
-      <div class="small">Type player name, "show stats <name>", "ipl winners", "odi winners", "female players"</div>
+      <div class="small">Type player name, "show stats &lt;name&gt;", "ipl winners", "odi winners", "female players"</div>
     </div>
   </div>
 
@@ -108,70 +106,20 @@
 
 <script>
 /* ----------------------------
-   STATIC DATA (Hinglish friendly)
+   STATIC DATA (same as your original)
    ---------------------------- */
 const profiles = {
-  "robin yadav": {
-    name: "Robin Yadav",
-    bio: "Right-handed all-rounder + wicketkeeper. Best shot: Cover Drive. Team: Mananpur Team. Goal: National cricketer.",
-  },
-
-   
- 
-  "hardik pandya": {
-    name: "Hardik Pandya",
-    dob: "11 Oct 1993",
-    role: "All-rounder",
-    bio: "Power-hitting all-rounder, right-arm medium fast bowler. IPL: Mumbai Indians (captain 2024).",
-  },
-  "rishabh pant": {
-    name: "Rishabh Pant",
-    dob: "04 Oct 1997",
-    role: "Wicketkeeper-batsman",
-    bio: "Explosive left-handed batsman, known for finishing matches and aggressive strokeplay.",
-  },
-  "babar azam": {
-    name: "Babar Azam",
-    dob: "15 Oct 1994",
-    role: "Top-order batsman",
-    bio: "Pakistan's classy batsman — consistent & elegant.",
-  },
-  "ab de villiers": {
-    name: "AB de Villiers",
-    dob: "17 Feb 1984",
-    role: "Wicketkeeper-batsman",
-    bio: "Mr. 360 — unorthodox, any-shot player. RCB legend in IPL.",
-  },
-  "shubman gill": {
-    name: "Shubman Gill",
-    dob: "08 Sep 1999",
-    role: "Top-order batsman",
-    bio: "Elegant opener known for timing & temperament. GT captain (2024).",
-  },
-  "virat kohli": {
-  name: "Virat Kohli",
-  dob: "05 Nov 1988",
-  role: "Top-order batsman",
-  bio: "Modern batting great known for consistency & aggression. Former India captain across formats.",
-},
-
-"ms dhoni": {
-  name: "MS Dhoni",
-  dob: "07 Jul 1981",
-  role: "Wicketkeeper-batsman",
-  bio: "Legendary finisher & tactician. Led India to all major ICC trophies; iconic CSK captain.",
-},
-
-"suryakumar yadav": {
-  name: "Suryakumar Yadav",
-  dob: "14 Sep 1990",
-  role: "Middle-order batsman",
-  bio: "Dynamic T20 specialist known for 360° stroke play and fearless batting approach.",
-}
-
+  "robin yadav": { name: "Robin Yadav", bio: "Right-handed all-rounder + wicketkeeper. Best shot: Cover Drive. Team: Mananpur Team. Goal: National cricketer." },
+  "hardik pandya": { name: "Hardik Pandya", dob: "11 Oct 1993", role: "All-rounder", bio: "Power-hitting all-rounder, right-arm medium fast bowler. IPL: Mumbai Indians (captain 2024)." },
+  "rishabh pant": { name: "Rishabh Pant", dob: "04 Oct 1997", role: "Wicketkeeper-batsman", bio: "Explosive left-handed batsman, known for finishing matches and aggressive strokeplay." },
+  "babar azam": { name: "Babar Azam", dob: "15 Oct 1994", role: "Top-order batsman", bio: "Pakistan's classy batsman — consistent & elegant." },
+  "ab de villiers": { name: "AB de Villiers", dob: "17 Feb 1984", role: "Wicketkeeper-batsman", bio: "Mr. 360 — unorthodox, any-shot player. RCB legend in IPL." },
+  "shubman gill": { name: "Shubman Gill", dob: "08 Sep 1999", role: "Top-order batsman", bio: "Elegant opener known for timing & temperament. GT captain (2024)." },
+  "virat kohli": { name: "Virat Kohli", dob: "05 Nov 1988", role: "Top-order batsman", bio: "Modern batting great known for consistency & aggression. Former India captain across formats." },
+  "ms dhoni": { name: "MS Dhoni", dob: "07 Jul 1981", role: "Wicketkeeper-batsman", bio: "Legendary finisher & tactician. Led India to all major ICC trophies; iconic CSK captain." },
+  "suryakumar yadav": { name: "Suryakumar Yadav", dob: "14 Sep 1990", role: "Middle-order batsman", bio: "Dynamic T20 specialist known for 360° stroke play and fearless batting approach." }
 };
 
-/* World famous male players (short) */
 const famousMale = {
   "sachin tendulkar": { name:"Sachin Tendulkar", dob:"24 Apr 1973", note:"Legend — highest runs in ODI/Test (career)" },
   "kane williamson": { name:"Kane Williamson", dob:"08 Aug 1990", note:"NZ captain, calm technician" },
@@ -179,7 +127,6 @@ const famousMale = {
   "ben stokes": { name:"Ben Stokes", dob:"04 Jun 1991", note:"Match-winner all-rounder" }
 };
 
-/* World famous female players (short) */
 const famousFemale = {
   "mithali raj": { name:"Mithali Raj", dob:"03 Dec 1982", note:"India legend — top run-scorer in women's ODI history" },
   "smriti mandhana": { name:"Smriti Mandhana", dob:"18 Jul 1996", note:"Stylish opener for India" },
@@ -187,88 +134,33 @@ const famousFemale = {
   "alyssa healy": { name:"Alyssa Healy", dob:"24 Mar 1990", note:"Explosive wicketkeeper-batter (AUS)" }
 };
 
-/* Approx career stats (rounded / approximate for static site) */
 const careerStats = {
-  "hardik pandya": {
-    "IPL": { matches:129, runs:"~2300", hundreds:0, sr:"~133", team:"MI" },
-    "ODI": { matches:86, runs:"~1750", hundreds:0, sr:"~112" },
-    "T20I": { matches:92, runs:"~1400", hundreds:0, sr:"~139" }
-  },
-  "rishabh pant": {
-    "IPL": { matches:110, runs:"~2900", hundreds:2, sr:"~147", team:"DC" },
-    "Test": { matches:33, runs:"~2200", hundreds:5 },
-    "ODI": { matches:30, runs:"~880", hundreds:1 }
-  },
-  "babar azam": {
-    "ODI": { matches:117, runs:"~5400", hundreds:19, sr:"~88" },
-    "T20I": { matches:110, runs:"~3700", hundreds:3, sr:"~129" },
-    "Test": { matches:52, runs:"~4100", hundreds:9 }
-  },
-  "ab de villiers": {
-    "IPL": { matches:184, runs:5162, hundreds:3, sr:"~152", team:"RCB" },
-    "ODI": { matches:228, runs:9577, hundreds:25, sr:"~101" },
-    "Test": { matches:114, runs:8765, hundreds:22 }
-  },
-  "shubman gill": {
-    "IPL": { matches:100, runs:"~2900", hundreds:1, sr:"~135", team:"GT" },
-    "ODI": { matches:55, runs:"~2200", hundreds:6, sr:"~104" },
-    "Test": { matches:40, runs:"~1500", hundreds:4 }
-  }
+  "hardik pandya": { "IPL": { matches:129, runs:"~2300", hundreds:0, sr:"~133", team:"MI" }, "ODI": { matches:86, runs:"~1750", hundreds:0, sr:"~112" }, "T20I": { matches:92, runs:"~1400", hundreds:0, sr:"~139" } },
+  "rishabh pant": { "IPL": { matches:110, runs:"~2900", hundreds:2, sr:"~147", team:"DC" }, "Test": { matches:33, runs:"~2200", hundreds:5 }, "ODI": { matches:30, runs:"~880", hundreds:1 } },
+  "babar azam": { "ODI": { matches:117, runs:"~5400", hundreds:19, sr:"~88" }, "T20I": { matches:110, runs:"~3700", hundreds:3, sr:"~129" }, "Test": { matches:52, runs:"~4100", hundreds:9 } },
+  "ab de villiers": { "IPL": { matches:184, runs:5162, hundreds:3, sr:"~152", team:"RCB" }, "ODI": { matches:228, runs:9577, hundreds:25, sr:"~101" }, "Test": { matches:114, runs:8765, hundreds:22 } },
+  "shubman gill": { "IPL": { matches:100, runs:"~2900", hundreds:1, sr:"~135", team:"GT" }, "ODI": { matches:55, runs:"~2200", hundreds:6, sr:"~104" }, "Test": { matches:40, runs:"~1500", hundreds:4 } }
 };
 
-/* IPL Winners (short list up to 2024) */
 const iplWinners = [
-  { year:2008, team:"Rajasthan Royals" },
-  { year:2009, team:"Deccan Chargers" },
-  { year:2010, team:"Chennai Super Kings" },
-  { year:2011, team:"Chennai Super Kings" },
-  { year:2012, team:"Kolkata Knight Riders" },
-  { year:2013, team:"Mumbai Indians" },
-  { year:2014, team:"Kolkata Knight Riders" },
-  { year:2015, team:"Mumbai Indians" },
-  { year:2016, team:"Sunrisers Hyderabad" },
-  { year:2017, team:"Mumbai Indians" },
-  { year:2018, team:"Chennai Super Kings" },
-  { year:2019, team:"Mumbai Indians" },
-  { year:2020, team:"Mumbai Indians" },
-  { year:2021, team:"Chennai Super Kings" },
-  { year:2022, team:"Gujarat Titans" },
-  { year:2023, team:"Chennai Super Kings" },
-  { year:2024, team:"Kolkata Knight Riders" }
+  { year:2008, team:"Rajasthan Royals" },{ year:2009, team:"Deccan Chargers" },{ year:2010, team:"Chennai Super Kings" },{ year:2011, team:"Chennai Super Kings" },{ year:2012, team:"Kolkata Knight Riders" },{ year:2013, team:"Mumbai Indians" },{ year:2014, team:"Kolkata Knight Riders" },{ year:2015, team:"Mumbai Indians" },{ year:2016, team:"Sunrisers Hyderabad" },{ year:2017, team:"Mumbai Indians" },{ year:2018, team:"Chennai Super Kings" },{ year:2019, team:"Mumbai Indians" },{ year:2020, team:"Mumbai Indians" },{ year:2021, team:"Chennai Super Kings" },{ year:2022, team:"Gujarat Titans" },{ year:2023, team:"Chennai Super Kings" },{ year:2024, team:"Kolkata Knight Riders" }
 ];
 
-/* ODI World Cup winners (short recent / notable) */
 const odiWinners = [
-  { year:1983, team:"India" },
-  { year:1992, team:"Pakistan" },
-  { year:1999, team:"Australia" },
-  { year:2011, team:"India" },
-  { year:2015, team:"Australia" },
-  { year:2019, team:"England" },
-  { year:2023, team:"Australia" }
+  { year:1983, team:"India" },{ year:1992, team:"Pakistan" },{ year:1999, team:"Australia" },{ year:2011, team:"India" },{ year:2015, team:"Australia" },{ year:2019, team:"England" },{ year:2023, team:"Australia" }
 ];
 
-/* T20 World Cup winners (short) */
 const t20Winners = [
-  { year:2007, team:"India" },
-  { year:2009, team:"Pakistan" },
-  { year:2010, team:"England" },
-  { year:2012, team:"West Indies" },
-  { year:2014, team:"Sri Lanka" },
-  { year:2016, team:"West Indies" },
-  { year:2022, team:"England" }
+  { year:2007, team:"India" },{ year:2009, team:"Pakistan" },{ year:2010, team:"England" },{ year:2012, team:"West Indies" },{ year:2014, team:"Sri Lanka" },{ year:2016, team:"West Indies" },{ year:2022, team:"England" }
 ];
 
 /* ----------------------------
-   UI + Simple NLU (static)
+   UI + Simple NLU (static) + Gemini integration
    ---------------------------- */
-const chatBtn = document.getElementById('chatBtn');
-const chatWindow = document.getElementById('chatWindow');
+
 const chatBody = document.getElementById('chatBody');
 const chatInput = document.getElementById('chatInput');
 const sendBtn = document.getElementById('sendBtn');
-
-
 
 document.querySelector('.quickRow').addEventListener('click', (e)=>{
   const q = e.target.getAttribute('data-q');
@@ -278,23 +170,91 @@ document.querySelector('.quickRow').addEventListener('click', (e)=>{
 sendBtn.addEventListener('click', ()=> { const q = chatInput.value.trim(); if(q) handleQuery(q); chatInput.value=''; });
 chatInput.addEventListener('keydown', (e)=> { if(e.key === 'Enter'){ e.preventDefault(); const q = chatInput.value.trim(); if(q) handleQuery(q); chatInput.value=''; } });
 
-function appendMsg(text, who='bot'){
+function appendMsg(text, who='bot', extraClass=''){
   const el = document.createElement('div');
-  el.className = 'msg ' + (who==='user' ? 'user' : 'bot');
+  el.className = 'msg ' + (who==='user' ? 'user' : 'bot') + (extraClass ? ' '+extraClass : '');
   el.innerHTML = text.replace(/\n/g,'<br/>');
   chatBody.appendChild(el);
   chatBody.scrollTop = chatBody.scrollHeight;
-
 }
 
-/* Main static query handler */
+/* ----------------------------
+   GEMINI (frontend) SETTINGS
+   ---------------------------- */
+
+/*
+  IMPORTANT:
+  - Paste your Gemini API key below.
+  - This key will be visible to anyone who views page source or network requests.
+  - If CORS error appears in console, this endpoint may block direct browser requests; then you'll need a backend.
+*/
+const API_KEY = "AIzaSyDRA2Fm_6iyjf0xv0b3zMyTeEk7gGnaixk"; // <-- paste your key here (string)
+const GEMINI_ENDPOINT = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${API_KEY}`;
+
+/* Basic throttle: prevent too many rapid calls (simple client-side guard) */
+let lastCallTime = 0;
+const MIN_CALL_INTERVAL_MS = 900; // ~1 request per second (adjust)
+
+async function askGemini(question){
+  // throttle
+  const now = Date.now();
+  if(now - lastCallTime < MIN_CALL_INTERVAL_MS) {
+    return "Please wait a moment before sending another request.";
+  }
+  lastCallTime = now;
+
+  try{
+    // show typing indicator
+    const typingId = '___typing';
+    appendMsg('<i class="muted">Bot is typing...</i>', 'bot', typingId);
+
+    const body = {
+      // This body matches the simple generateContent shape used earlier.
+      contents: [
+        { role: "user", parts: [{ text: question }] }
+      ]
+    };
+
+    const res = await fetch(GEMINI_ENDPOINT, {
+      method: 'POST',
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    // remove typing indicator (first occurrence)
+    const typingEl = document.querySelector('.'+ '___typing');
+    if(typingEl) typingEl.remove();
+
+    if(!res.ok){
+      // try to extract error info
+      let txt = await res.text();
+      console.error('Gemini error raw:', res.status, txt);
+      return `⚠️ API Error (${res.status}). Check console.`;
+    }
+
+    const data = await res.json();
+    // try multiple paths just in case
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text
+                || data?.response?.output?.[0]?.content?.text
+                || (typeof data === 'string' ? data : JSON.stringify(data).slice(0,500));
+
+    return reply || "⚠️ Koi reply nahi mila (empty).";
+  }catch(err){
+    console.error('askGemini error', err);
+    // remove typing indicator if still present
+    const typingEl = document.querySelector('.'+ '___typing');
+    if(typingEl) typingEl.remove();
+    return "⚠️ Network ya CORS error. Console check karo.";
+  }
+}
+
+/* Main static + fallback to Gemini */
 function handleQuery(raw){
-  appendMsg(`<b>You:</b> ${escapeHtml(raw)}`, 'user');
-  setTimeout(()=> generateReply(raw), 250);
-}
+  const userText = raw.trim();
+  appendMsg(`<b>You:</b> ${escapeHtml(userText)}`, 'user');
 
-function generateReply(raw){
-  const q = raw.trim().toLowerCase();
+  // first attempt static responses (same logic as before)
+  const q = userText.toLowerCase();
 
   // exact player quick match from profiles
   if(profiles[q]){
@@ -303,7 +263,6 @@ function generateReply(raw){
     return;
   }
 
-  // famous male/female lists
   if(q.includes('female players') || q.includes('women players') || q.includes('female cricketers')){
     let out = `<b>Famous Women Cricketers</b><br/><ul style="padding-left:16px;margin:6px 0">`;
     for(const k in famousFemale) out += `<li><b>${escapeHtml(famousFemale[k].name)}</b> — DOB: ${escapeHtml(famousFemale[k].dob)} • ${escapeHtml(famousFemale[k].note)}</li>`;
@@ -319,25 +278,23 @@ function generateReply(raw){
     return;
   }
 
-  // show career stats
   const statsMatch = q.match(/show stats\s+(.+)/) || q.match(/stats\s+(.+)/);
   if(statsMatch){
     const name = statsMatch[1].trim().toLowerCase();
     if(careerStats[name]){
       appendMsg(renderStatsTable(name, careerStats[name]));
+      return;
     } else {
-      appendMsg("Sorry, statistics for that player are not available in this static version. Try: Hardik Pandya, Rishabh Pant, Babar Azam, AB de Villiers, Shubman Gill.");
+      appendMsg("Sorry, statistics for that player are not available in this static version. Trying live AI for suggestions...");
+      // fall through to AI
     }
-    return;
   }
 
-  // direct map for specific players in careerStats
   if(careerStats[q]){
     appendMsg(renderStatsTable(q, careerStats[q]));
     return;
   }
 
-  // IPL winners
   if(q.includes('ipl winners') || q.includes('ipl winner') || q.includes('ipl list')){
     let out = `<b>IPL Winners (selected)</b><br/><div style="max-height:180px;overflow:auto"><table class="table"><thead><tr><th>Year</th><th>Team</th></tr></thead><tbody>`;
     iplWinners.forEach(it=> out += `<tr><td>${it.year}</td><td>${escapeHtml(it.team)}</td></tr>`);
@@ -346,7 +303,6 @@ function generateReply(raw){
     return;
   }
 
-  // ODI winners
   if(q.includes('odi winners') || q.includes('world cup winners') || q.includes('odi world cup')){
     let out = `<b>ODI World Cup Winners (selected)</b><br/><table class="table"><thead><tr><th>Year</th><th>Winner</th></tr></thead><tbody>`;
     odiWinners.forEach(it=> out += `<tr><td>${it.year}</td><td>${escapeHtml(it.team)}</td></tr>`);
@@ -355,7 +311,6 @@ function generateReply(raw){
     return;
   }
 
-  // T20 winners
   if(q.includes('t20 winners') || q.includes('t20 world cup')){
     let out = `<b>T20 World Cup Winners</b><br/><table class="table"><thead><tr><th>Year</th><th>Winner</th></tr></thead><tbody>`;
     t20Winners.forEach(it=> out += `<tr><td>${it.year}</td><td>${escapeHtml(it.team)}</td></tr>`);
@@ -364,7 +319,6 @@ function generateReply(raw){
     return;
   }
 
-  // some direct FAQ phrases
   if(q.includes('how to practice') || q.includes('practice') || q.includes('improve')){
     if(q.includes('cover') || q.includes('cover drive') || q.includes('coverdrive')){
       appendMsg(`<b>Cover Drive Practice</b><br/>1) Footwork: Move front foot early towards ball. 2) Head steady and eyes on ball. 3) Bat face straight, follow-through. 4) Start slow throwdowns → increase pace.`);
@@ -379,7 +333,6 @@ function generateReply(raw){
     if(profiles[name]) { appendMsg(`<b>${escapeHtml(profiles[name].name)}</b><br/>${escapeHtml(profiles[name].bio)}`); return; }
   }
 
-  // fallback: check if any profile name contains words
   for(const k in profiles){
     if(k.includes(q) || q.includes(k) || (q.split(' ').some(w=> k.includes(w) && w.length>3))){
       appendMsg(`<b>${escapeHtml(profiles[k].name)}</b><br/>${escapeHtml(profiles[k].bio)}`);
@@ -387,8 +340,12 @@ function generateReply(raw){
     }
   }
 
-  // final fallback
-  appendMsg("Sorry bhai, is topic ka data iss static version me available nahi. Try: a player's exact name (e.g. 'Hardik Pandya'), 'Show stats <name>', 'IPL winners', 'ODI winners', or 'female players'.");
+  // FINAL FALLBACK: use Gemini (live)
+  appendMsg('<i class="muted">Trying live AI for an answer...</i>', 'bot');
+
+  askGemini(userText).then(reply => {
+    appendMsg(`<b>AI:</b> ${escapeHtml(reply)}`);
+  });
 }
 
 /* Render a small stats table HTML */
@@ -408,22 +365,3 @@ function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
