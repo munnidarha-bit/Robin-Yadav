@@ -360,6 +360,110 @@
       <h3 class="news-title">📢 Live Cricket Updates</h3>
       <ul id="news-list"></ul>
       </div>
+      <h2>Live Score</h2>
+<div id="liveScore"></div>
+
+<h2>All Upcoming Matches</h2>
+<div id="upcoming"></div>
+
+<h2>Indian Players Stats</h2>
+<div id="allPlayers"></div>
+
+<script>
+const API_KEY = "fa4f3e23-73f6-4f40-9072-"; 
+
+/* ------------------- LIVE SCORE ------------------- */
+async function getLiveScore() {
+    try {
+        const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${API_KEY}&offset=0`);
+        const data = await res.json();
+
+        if (!data.data || data.data.length === 0) {
+            document.getElementById("liveScore").innerHTML = "No live match right now.";
+            return;
+        }
+
+        let m = data.data[0];
+
+        document.getElementById("liveScore").innerHTML = `
+            <p><strong>${m.name}</strong></p>
+            <p>Status: ${m.status}</p>
+            ${m.score.map(s => `${s.inning}: ${s.r}/${s.w} (${s.o})`).join("<br>")}
+        `;
+    } catch (err) {
+        console.log(err);
+    }
+}
+getLiveScore();
+setInterval(getLiveScore, 30000);
+
+
+/* ------------------- ALL UPCOMING MATCHES ------------------- */
+async function getUpcoming() {
+    try {
+        const res = await fetch(`https://api.cricapi.com/v1/matches?apikey=${API_KEY}&offset=0`);
+        const data = await res.json();
+
+        document.getElementById("upcoming").innerHTML =
+            data.data.map(m => `
+                <p>
+                    <strong>${m.name}</strong><br>
+                    ${new Date(m.dateTimeGMT).toLocaleString()}
+                </p>
+            `).join("");
+    } catch (err) {
+        console.log(err);
+    }
+}
+getUpcoming();
+
+
+/* ------------------- INDIA PLAYERS FULL LIST ------------------- */
+const playerIDs = [
+    // Batsmen
+    253802, 34102, 1070183, 477603, 422108, 642519, 1064812, 720471, 1175485,
+
+    // All Rounders
+    625371, 234675, 554691, 719715, 714505,
+
+    // Wicketkeepers
+    931581, 425943,
+
+    // Bowlers
+    625383, 481896, 940973, 559235, 430246, 1125976, 917159
+];
+
+/* ------------------- LOAD ALL PLAYER STATS ------------------- */
+async function loadAllPlayers() {
+    let html = "";
+
+    for (let id of playerIDs) {
+        try {
+            const res = await fetch(`https://api.cricapi.com/v1/players_info?apikey=${API_KEY}&id=${id}`);
+            const data = await res.json();
+
+            if (!data.data) continue;
+            let p = data.data;
+
+            html += `
+                <p>
+                    <strong>${p.name}</strong><br>
+                    Role: ${p.role}<br>
+                    Batting: ${p.battingStyle}<br>
+                    ODI Runs: ${p.stats?.batting?.ODI?.R || "N/A"}
+                </p>
+            `;
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    document.getElementById("allPlayers").innerHTML = html;
+}
+
+loadAllPlayers();
+</script>
+
   </div>
 
   <!-- Floating Chat Button -->
@@ -502,6 +606,7 @@ setInterval(loadNews, 1200000);
 
 </body>
 </html>
+
 
 
 
