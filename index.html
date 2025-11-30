@@ -263,6 +263,22 @@
   background: #dfffe1;
 }
 
+.match-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    margin: 12px 0;
+    box-shadow: 0px 2px 4px rgba(0,0,0,0.10);
+    font-size: 16px;
+    color: #333;
+    line-height: 1.4;
+}
+.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 25px 0 10px 0;
+    color: #0b3d2e;
+}
 
 
 
@@ -360,108 +376,79 @@
       <h3 class="news-title">📢 Live Cricket Updates</h3>
       <ul id="news-list"></ul>
       </div>
-      <h2>Live Score</h2>
-<div id="liveScore"></div>
+     <h2 class="section-title">⏰All Upcoming Matches</h2>
+<div id="upcomingMatches"></div>
 
-<h2>All Upcoming Matches</h2>
-<div id="upcoming"></div>
+<h2 class="section-title">🏏Live Match Score</h2>
+<div id="liveMatch"></div>
 
-<h2>Indian Players Stats</h2>
-<div id="allPlayers"></div>
+<h2 class="section-title">🏃‍➡️Indian Players Stats</h2>
+<div id="indiaPlayers"></div>
 
 <script>
-const API_KEY = "fa4f3e23-73f6-4f40-9072-"; 
+const API_KEY = "fa4f3e23-73f6-4f40-9072-0910de051236";  // your key
 
-/* ------------------- LIVE SCORE ------------------- */
-async function getLiveScore() {
-    try {
-        const res = await fetch(`https://api.cricapi.com/v1/currentMatches?apikey=${API_KEY}&offset=0`);
-        const data = await res.json();
+async function fetchUpcomingMatches() {
+    let res = await fetch(`https://api.cricketdata.org/fixtures?apikey=${API_KEY}`);
+    let data = await res.json();
 
-        if (!data.data || data.data.length === 0) {
-            document.getElementById("liveScore").innerHTML = "No live match right now.";
-            return;
-        }
-
-        let m = data.data[0];
-
-        document.getElementById("liveScore").innerHTML = `
-            <p><strong>${m.name}</strong></p>
-            <p>Status: ${m.status}</p>
-            ${m.score.map(s => `${s.inning}: ${s.r}/${s.w} (${s.o})`).join("<br>")}
-        `;
-    } catch (err) {
-        console.log(err);
-    }
-}
-getLiveScore();
-setInterval(getLiveScore, 30000);
-
-
-/* ------------------- ALL UPCOMING MATCHES ------------------- */
-async function getUpcoming() {
-    try {
-        const res = await fetch(`https://api.cricapi.com/v1/matches?apikey=${API_KEY}&offset=0`);
-        const data = await res.json();
-
-        document.getElementById("upcoming").innerHTML =
-            data.data.map(m => `
-                <p>
-                    <strong>${m.name}</strong><br>
-                    ${new Date(m.dateTimeGMT).toLocaleString()}
-                </p>
-            `).join("");
-    } catch (err) {
-        console.log(err);
-    }
-}
-getUpcoming();
-
-
-/* ------------------- INDIA PLAYERS FULL LIST ------------------- */
-const playerIDs = [
-    // Batsmen
-    253802, 34102, 1070183, 477603, 422108, 642519, 1064812, 720471, 1175485,
-
-    // All Rounders
-    625371, 234675, 554691, 719715, 714505,
-
-    // Wicketkeepers
-    931581, 425943,
-
-    // Bowlers
-    625383, 481896, 940973, 559235, 430246, 1125976, 917159
-];
-
-/* ------------------- LOAD ALL PLAYER STATS ------------------- */
-async function loadAllPlayers() {
     let html = "";
+    data.data.slice(0, 5).forEach(match => {
+        html += `
+        <div class="match-card">
+            <strong>${match.teams[0]} vs ${match.teams[1]}</strong><br>
+            Date: ${match.date}<br>
+            Venue: ${match.venue}
+        </div>`;
+    });
 
-    for (let id of playerIDs) {
-        try {
-            const res = await fetch(`https://api.cricapi.com/v1/players_info?apikey=${API_KEY}&id=${id}`);
-            const data = await res.json();
-
-            if (!data.data) continue;
-            let p = data.data;
-
-            html += `
-                <p>
-                    <strong>${p.name}</strong><br>
-                    Role: ${p.role}<br>
-                    Batting: ${p.battingStyle}<br>
-                    ODI Runs: ${p.stats?.batting?.ODI?.R || "N/A"}
-                </p>
-            `;
-        } catch (err) {
-            console.log(err);
-        }
-    }
-
-    document.getElementById("allPlayers").innerHTML = html;
+    document.getElementById("upcomingMatches").innerHTML = html;
 }
 
-loadAllPlayers();
+async function fetchLiveMatch() {
+    let res = await fetch(`https://api.cricketdata.org/livematches?apikey=${API_KEY}`);
+    let data = await res.json();
+
+    if (data.data.length === 0) {
+        document.getElementById("liveMatch").innerHTML = 
+        `<div class="match-card">No live match right now.</div>`;
+        return;
+    }
+
+    let m = data.data[0];
+    document.getElementById("liveMatch").innerHTML = `
+        <div class="match-card">
+            <strong>${m.teams[0]} vs ${m.teams[1]}</strong><br>
+            Score: ${m.live_score}<br>
+            Overs: ${m.overs}
+        </div>`;
+}
+
+async function fetchIndiaPlayers() {
+    const players = [
+        253802, 34102, 477603, 625383, 481896, 559235, 720471
+    ];
+
+    let html = "";
+    for (let id of players) {
+        let res = await fetch(`https://api.cricketdata.org/player/${id}?apikey=${API_KEY}`);
+        let p = await res.json();
+
+        html += `
+        <div class="match-card">
+            <strong>${p.data.name}</strong><br>
+            Role: ${p.data.role}<br>
+            Matches: ${p.data.stats.matches}<br>
+            Runs: ${p.data.stats.runs}
+        </div>`;
+    }
+
+    document.getElementById("indiaPlayers").innerHTML = html;
+}
+
+fetchUpcomingMatches();
+fetchLiveMatch();
+fetchIndiaPlayers();
 </script>
 
   </div>
@@ -606,6 +593,7 @@ setInterval(loadNews, 1200000);
 
 </body>
 </html>
+
 
 
 
