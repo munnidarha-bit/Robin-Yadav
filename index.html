@@ -376,79 +376,260 @@
       <h3 class="news-title">📢 Live Cricket Updates</h3>
       <ul id="news-list"></ul>
       </div>
-     <h2 class="section-title">⏰All Upcoming Matches</h2>
+     <!-- Paste exactly where you want the sections to appear (no styling changes) -->
+<h2 class="section-title">All Upcoming Matches</h2>
 <div id="upcomingMatches"></div>
 
-<h2 class="section-title">🏏Live Match Score</h2>
+<h2 class="section-title">Live Match Score</h2>
 <div id="liveMatch"></div>
 
-<h2 class="section-title">🏃‍➡️Indian Players Stats</h2>
+<h2 class="section-title">Indian Players Stats</h2>
 <div id="indiaPlayers"></div>
 
 <script>
-const API_KEY = "fa4f3e23-73f6-4f40-9072-0910de051236";  // your key
+/* ---------- CONFIG ---------- */
+const API_KEY = "fa4f3e23-73f6-4f40-9072-0910de051236"; // your full key
+// list of player IDs you wanted (can add/remove)
+const INDIA_PLAYER_IDS = [
+  253802, 34102, 1070183, 477603, 422108, 642519, 1064812, 720471, 1175485,
+  625371, 234675, 554691, 719715, 714505, 931581, 425943,
+  625383, 481896, 940973, 559235, 430246, 1125976, 917159
+];
 
+/* ---------- helper ---------- */
+async function tryFetch(url) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return null;
+    const j = await r.json();
+    return j;
+  } catch (e) {
+    console.warn("fetch failed", url, e);
+    return null;
+  }
+}
+
+function textOr(v, alt="N/A") { return (v===undefined || v===null || v==="" ) ? alt : v; }
+
+/* ---------- UPCOMING MATCHES (robust) ---------- */
 async function fetchUpcomingMatches() {
-    let res = await fetch(`https://api.cricketdata.org/fixtures?apikey=${API_KEY}`);
-    let data = await res.json();
+  const containers = document.getElementById("upcomingMatches");
+  containers.innerHTML = "Loading upcoming matches...";
+  // try multiple common endpoints (order: cricapi v1, cricketdata, generic)
+  const tries = [
+    `https://api.cricapi.com/v1/matches?apikey=${API_KEY}&offset=0`,
+    `https://api.cricapi.com/v1/fixtures?apikey=${API_KEY}`,
+    `https://api.cricketdata.org/fixtures?apikey=${API_KEY}`,
+    `https://cricketapi.platform.iplt20.com/fixtures?apikey=${API_KEY}`
+  ];
 
-    let html = "";
-    data.data.slice(0, 5).forEach(match => {
-        html += `
-        <div class="match-card">
-            <strong>${match.teams[0]} vs ${match.teams[1]}</strong><br>
-            Date: ${match.date}<br>
-            Venue: ${match.venue}
-        </div>`;
-    });
+  let data = null;
+  for (let url of tries) {
+    data = await tryFetch(url);
+    if (data) break;
+  }
+  if (!data) {
+    containers.innerHTML = "Unable to load upcoming matches.";
+    return;
+  }
 
-    document.getElementById("upcomingMatches").innerHTML = html;
+  // normalize list extraction
+  let matches = data.data || data.matches || data.result || data.fixtures || [];
+  if (!Array.isArray(matches) && matches?.length) matches = matches; // defensive
+  if (!Array.isArray(matches)) {
+    // try other key shapes
+    matches = Object.values(data).flat().filter(Boolean);
+  }
+  matches = matches.slice(0, 20); // limit
+
+  if (matches.length === 0) {
+    containers.innerHTML = "No upcoming matches found.";
+    return;
+  }
+
+  const html = matches.map(m => {
+    // detect team names
+    let t1 = textOr(m.team1 || (m.teams && m.teams[0]) || (m.home && m.home.name) || m.teams?.[0] || m.teams?.home);
+    let t2 = textOr(m.team2 || (m.teams && m.teams[1]) || (m.away && m.away.name) || m.teams?.[1] || m.teams?.away);
+    // date detection
+    let dt = m.dateTimeGMT || m.date || m.start_date || m.utc || m.match_date || null;
+    let dateStr;
+    try { dateStr = dt ? (new Date(dt)).toLocaleString() : "Date unknown"; } catch(e){ dateStr = textOr(dt); }
+    // venue detection
+    let venue = textOr(m.venue?.name || m.venue || m.ground || m.venueName || m.location);
+
+    return `<div class="match-card">
+      <strong>${t1} vs ${t2}</strong><br>
+      ${dateStr}<br>
+      Venue: ${venue}
+    </div>`;
+  }).join("");
+
+  containers.innerHTML = html;
 }
 
+/* ---------- LIVE MATCH (robust) ---------- */
 async function fetchLiveMatch() {
-    let res = await fetch(`https://api.cricketdata.org/livematches?apikey=${API_KEY}`);
-    let data = await res.json();
+  const container = document.getElementById("liveMatch");
+  container.innerHTML = "Loading live match...";
+  // try common live endpoints
+  const tries = [
+    `https://api.cricapi.com/v1/currentMatches?apikey=${API_KEY}&offset=0`,
+    `https://api.cricapi.com/v1/livematches?apikey=${API_KEY}`,
+    `https://api.cricketdata.org/livematches?apikey=${API_KEY}`,
+    `https://api.cricketdata.org/live?apikey=${API_KEY}`
+  ];
 
-    if (data.data.length === 0) {
-        document.getElementById("liveMatch").innerHTML = 
-        `<div class="match-card">No live match right now.</div>`;
-        return;
+  let data = null;
+  for (let url of tries) {
+    data = await tryFetch(url);
+    if (data) break;
+  }
+  if (!data) {
+    container.innerHTML = "<div class='match-card'>Unable to load live matches.</div>";
+    return;
+  }
+
+  // normalize live matches array
+  let lives = data.data || data.matches || data.live || data.result || [];
+  if (!Array.isArray(lives)) lives = Array.isArray(data) ? data : [];
+  if (lives.length === 0) {
+    container.innerHTML = `<div class="match-card">No live match right now.</div>`;
+    return;
+  }
+
+  // pick first live match
+  const m = lives[0];
+
+  // try to extract teams and score info with fallbacks
+  const team1 = textOr(m.team1 || (m.teams && m.teams[0]) || m.team_A || m.home?.name || m.teams?.[0]);
+  const team2 = textOr(m.team2 || (m.teams && m.teams[1]) || m.team_B || m.away?.name || m.teams?.[1]);
+  // possible score fields
+  const score = textOr(m.score || m.scores || m.live_score || (m.scorecard && m.scorecard.summary) || "");
+  const overs = textOr(m.overs || m.overs_played || m.live_overs || m.overs_now || (m.scorecard && m.scorecard.overs));
+
+  // if detailed score not available in this object, try to fetch scorecard by id
+  let detailedHtml = "";
+  try {
+    let matchId = m.id || m.match_id || m.matchId || m.unique_id || m.id_match;
+    if (matchId) {
+      // try scorecard endpoints
+      const scoreTries = [
+        `https://api.cricapi.com/v1/scorecards?apikey=${API_KEY}&id=${matchId}`,
+        `https://api.cricapi.com/v1/scorecard/${matchId}?apikey=${API_KEY}`,
+        `https://api.cricketdata.org/scorecard/${matchId}?apikey=${API_KEY}`,
+        `https://api.cricketdata.org/scorecard?matchId=${matchId}&apikey=${API_KEY}`
+      ];
+      let sdata = null;
+      for (let u of scoreTries) {
+        sdata = await tryFetch(u);
+        if (sdata) break;
+      }
+      if (sdata && (sdata.data || sdata.scorecard || sdata.result)) {
+        const sc = sdata.data || sdata.scorecard || sdata.result;
+        // try to extract batting arrays
+        const batting = sc.batting || sc.innings || sc.innings_summary || sc.score;
+        if (Array.isArray(batting)) {
+          // build batting lines
+          const batterLines = batting.flatMap(inning => {
+            const players = inning.batsmen || inning.batting || inning.players || inning;
+            if (!Array.isArray(players)) return [];
+            return players.map(p => {
+              const name = textOr(p.name || p.batsman || p.player_name);
+              const runs = textOr(p.r || p.runs || p.runs_scored);
+              const balls = textOr(p.b || p.balls || p.balls_faced);
+              const fours = textOr(p.f || p.fours || p.f4);
+              const sixes = textOr(p.s || p.sixes || p.f6);
+              return `${name}: ${runs} (${balls}) - 4s:${fours} 6s:${sixes}`;
+            });
+          });
+          if (batterLines.length) {
+            detailedHtml = `<div>${batterLines.slice(0,30).join("<br>")}</div>`;
+          }
+        }
+      }
     }
+  } catch (e) {
+    console.warn("scorecard fetch error", e);
+  }
 
-    let m = data.data[0];
-    document.getElementById("liveMatch").innerHTML = `
-        <div class="match-card">
-            <strong>${m.teams[0]} vs ${m.teams[1]}</strong><br>
-            Score: ${m.live_score}<br>
-            Overs: ${m.overs}
-        </div>`;
+  // final render
+  container.innerHTML = `
+    <div class="match-card">
+      <strong>${team1} vs ${team2}</strong><br>
+      ${score ? `<div>Score: ${score}</div>` : ""}
+      ${overs ? `<div>Overs: ${overs}</div>` : ""}
+      ${detailedHtml ? `<hr>${detailedHtml}` : ""}
+    </div>
+  `;
 }
 
+/* ---------- INDIAN PLAYERS (robust single requests, bat stats) ---------- */
 async function fetchIndiaPlayers() {
-    const players = [
-        253802, 34102, 477603, 625383, 481896, 559235, 720471
+  const container = document.getElementById("indiaPlayers");
+  container.innerHTML = "Loading players...";
+  let htmlParts = [];
+
+  for (let id of INDIA_PLAYER_IDS) {
+    // try multiple endpoints for player details
+    const tries = [
+      `https://api.cricapi.com/v1/players_info?apikey=${API_KEY}&id=${id}`,
+      `https://api.cricapi.com/v1/playerStats?apikey=${API_KEY}&pid=${id}`,
+      `https://api.cricketdata.org/player/${id}?apikey=${API_KEY}`,
+      `https://api.cricketdata.org/players/${id}?apikey=${API_KEY}`
     ];
-
-    let html = "";
-    for (let id of players) {
-        let res = await fetch(`https://api.cricketdata.org/player/${id}?apikey=${API_KEY}`);
-        let p = await res.json();
-
-        html += `
-        <div class="match-card">
-            <strong>${p.data.name}</strong><br>
-            Role: ${p.data.role}<br>
-            Matches: ${p.data.stats.matches}<br>
-            Runs: ${p.data.stats.runs}
-        </div>`;
+    let data = null;
+    for (let u of tries) {
+      data = await tryFetch(u);
+      if (data) break;
+    }
+    if (!data) {
+      htmlParts.push(`<div class="match-card"><strong>ID ${id}</strong><br>Unable to load player.</div>`);
+      continue;
     }
 
-    document.getElementById("indiaPlayers").innerHTML = html;
+    // normalize player object
+    const p = data.data || data.player || data.player_detail || data.result || data;
+    // name detection
+    const name = textOr(p.name || p.fullName || p.player_name || p.player || p.data?.name);
+    const role = textOr(p.role || p.playing_role || p.player_role || p.position || p.data?.playing_role);
+    // batting info try several paths
+    let runs = "N/A", matches = "N/A", battingStyle = textOr(p.battingStyle || p.batting_style || p.bat_style || p.data?.battingStyle || p.data?.batting?.style);
+    try {
+      // common cricapi shape: p.data -> profile or stats
+      const profile = p.profile || p.data?.profile || p.data || p.player || p;
+      // try career batting runs (ODI/T20/Test aggregated)
+      runs = profile.stats?.batting?.overall?.runs || profile.stats?.batting?.ODI?.R || profile.stats?.batting?.T20Is?.R || profile.stats?.batting?.Test?.R || profile.runs || profile.total_runs || profile.careerRuns;
+      matches = profile.stats?.matches || profile.matches || profile.stats?.batting?.overall?.matches || profile.stats?.batting?.ODI?.M || profile.stats?.batting?.T20Is?.M;
+    } catch(e) {
+      // ignore
+    }
+
+    htmlParts.push(`<div class="match-card">
+      <strong>${name}</strong><br>
+      Role: ${role}<br>
+      Batting: ${battingStyle || "N/A"}<br>
+      Runs: ${textOr(runs, "N/A")}<br>
+      Matches: ${textOr(matches, "N/A")}
+    </div>`);
+  }
+
+  container.innerHTML = htmlParts.join("");
 }
 
-fetchUpcomingMatches();
-fetchLiveMatch();
-fetchIndiaPlayers();
+/* ---------- initialize and intervals ---------- */
+async function initAll() {
+  await fetchUpcomingMatches();
+  await fetchLiveMatch();
+  await fetchIndiaPlayers();
+}
+initAll();
+
+// live match refresh often
+setInterval(fetchLiveMatch, 20000);   // every 20s
+// upcoming and players refresh less frequently
+setInterval(fetchUpcomingMatches, 180000); // every 3min
+setInterval(fetchIndiaPlayers, 180000); // every 3min
 </script>
 
   </div>
@@ -593,6 +774,7 @@ setInterval(loadNews, 1200000);
 
 </body>
 </html>
+
 
 
 
