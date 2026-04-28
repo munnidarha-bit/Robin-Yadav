@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+   <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; display: flex; justify-content: center; padding: 50px; }
+        .form-container { background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #0056b3; }
+    </style>
   <!-- OneSignal Notification SDK -->
 <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 <script>
@@ -370,6 +380,29 @@
         <p style="font-size:13px; color:#444">To register Robin for trials or matches, contact his coach or local club.
            <br/>Contact: +91-8789208426|
         </p>
+        <div class="form-container">
+    <h2>Candidate Form</h2>
+    <!-- Replace "YOUR_FORM_ID" with the ID provided by Formspree -->
+    <form action="https://formsubmit.co" method="POST">
+        <div class="form-group">
+            <label for="name">Candidate Name:</label>
+            <input type="text" id="name" name="name" placeholder="John Doe" required>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email ID:</label>
+            <input type="email" id="email" name="email" placeholder="email@example.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <textarea id="address" name="address" rows="4" placeholder="Enter full address" required></textarea>
+        </div>
+
+        <button type="submit">Submit Details</button>
+    </form>
+</div>
+
       </div>
     </aside>
       <div class="card news-card">
